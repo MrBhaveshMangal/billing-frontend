@@ -1,26 +1,63 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Menubar from './Components/Menubar/Menubar'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Dashboard from './assets/Pages/Dashboard/Dashboard'
 import ManageCategory from './assets/Pages/ManageCategory/ManageCategory'
 import ManageUsers from './assets/Pages/ManageUsers/ManageUsers'
 import ManageItems from './assets/Pages/ManageItems/ManageItems'
 import Explore from './assets/Pages/Explore/Explore'
 import { Toaster } from 'react-hot-toast'
+import Login from './assets/Pages/Login/Login'
+import OrderHistory from './assets/Pages/OrderHistory/OrderHistory'
+import { AppContext } from './context/AppContext'
+import NotFound from './assets/Pages/NotFound/NotFound'
 
 const App = () => {
+  const location = useLocation();
+  const {auth}=useContext(AppContext);
+
+  const LoginRoute=({element})=>{
+    if(auth.token){
+      return <Navigate to="/dashboard" replace/>
+    }
+    return element;
+
+  } 
+
+  const ProtectedRoute=({element,allowedRoles})=>{
+    if(!auth.token){
+      return <Navigate to='/login' replace/>
+    }
+    if(allowedRoles && !allowedRoles.includes(auth.role)){
+      return <Navigate to="/dashboard" replace/>;
+    }
+    return element;
+
+  }
+
   return (
     <div>
-      <Menubar />
-      <Toaster/>
+      {location.pathname !== "/login" && <Menubar />}
+      <Toaster />
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} ></Route>
-        <Route path="/category" element={<ManageCategory />}></Route>
-        <Route path="/users" element={<ManageUsers />}></Route>
-        <Route path="/items" element={<ManageItems />}></Route>
         <Route path="/explore" element={<Explore />}></Route>
-        <Route path="/" element={<Dashboard />}></Route>
+        {/* Admin only routes */}
+        <Route path="/category" element={<ProtectedRoute element={<ManageCategory />} allowedRoles={['ROLE_ADMIN']}/>}></Route>
+        <Route path="/users" element={<ProtectedRoute element={<ManageUsers />} allowedRoles={['ROLE_ADMIN']}/>}></Route>
+        <Route path="/items" element={<ProtectedRoute element={<ManageItems />} allowedRoles={['ROLE_ADMIN']}/>}></Route>
         
+        <Route path="/login" element={<LoginRoute element={<Login />} />} />
+
+        <Route path="/orders" element={<OrderHistory />}></Route>
+
+        <Route path="/" element={<Dashboard />}></Route>
+
+        <Route path="*" element={<NotFound />}></Route>
+
+         
+
+
       </Routes>
     </div>
   )

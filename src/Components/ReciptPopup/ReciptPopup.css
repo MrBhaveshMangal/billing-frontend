@@ -1,0 +1,48 @@
+.receipt-popup-overlay {
+  position: fixed;           /* fixed correct spelling */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;   /* centers horizontally */
+  align-items: center;       /* centers vertically */
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.receipt-popup {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: popupFadeIn 0.3s ease;
+  transform: translateY(0);  /* ensures no vertical offset */
+}
+
+@keyframes popupFadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cart-items-scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.receipt-popup .btn {
+  padding: 8px 16px;
+  font-size: 14px;
+}
