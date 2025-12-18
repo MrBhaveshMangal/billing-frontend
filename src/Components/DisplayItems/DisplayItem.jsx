@@ -1,4 +1,4 @@
-import Item from "../Item/item";
+import Item from "../Item/Item";
 import "./DisplayItem.css"
 import {AppContext} from  "../../context/AppContext"
 import React, { useContext, useState } from 'react'
