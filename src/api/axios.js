@@ -4,14 +4,19 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
-api.interceptors.request.use((config) => {
-  if (!config.url.includes("/login")) {
+api.interceptors.request.use(
+  (config) => {
     const token = localStorage.getItem("token");
+
+    // Add token to every request if present
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-  }
-  return config;
-});
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 
 export default api;
